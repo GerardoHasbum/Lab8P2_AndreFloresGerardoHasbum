@@ -16,6 +16,9 @@ public class Participante extends User implements Serializable{
     public ArrayList<Torneo> inscritos = new ArrayList();
     public ArrayList<Torneo> ganados = new ArrayList();
 
+    public Participante() {
+    }
+
     public Participante(String nombre, String password) {
         super(nombre, password);
     }

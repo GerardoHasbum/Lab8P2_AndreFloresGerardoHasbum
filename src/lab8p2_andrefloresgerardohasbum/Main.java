@@ -24,7 +24,8 @@ public class Main extends javax.swing.JFrame {
     /**
      * Creates new form Main
      */
-    ArrayList<User> usuarios = new ArrayList();
+    public ArrayList<User> usuarios = new ArrayList();
+    private boolean logged = false;
 
     public Main() {
         initComponents();
@@ -366,6 +367,11 @@ public class Main extends javax.swing.JFrame {
         LoginConfirm.setBackground(new java.awt.Color(204, 0, 0));
         LoginConfirm.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         LoginConfirm.setText("Iniciar sesion");
+        LoginConfirm.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                LoginConfirmMouseClicked(evt);
+            }
+        });
         jPanel1.add(LoginConfirm, new org.netbeans.lib.awtextra.AbsoluteConstraints(420, 450, 150, 70));
 
         SignUpButton.setBackground(new java.awt.Color(0, 51, 204));
@@ -421,21 +427,88 @@ public class Main extends javax.swing.JFrame {
 
     private void jButton1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton1MouseClicked
         // TODO add your handling code here:
-        jd_Registrar.setVisible(false);
-        this.pack();
-        this.setVisible(true);
-        this.setResizable(false);
+
         if (rb_Participante.isSelected()) {
             usuarios.add(new Participante(Tf_usernameRegistrar.getText(), Tf_PasswordRegistrar.getText()));
+            jd_Registrar.setVisible(false);
+            this.pack();
+            this.setVisible(true);
+            this.setResizable(false);
+            escribirUsuarios(usuarios, "usuarios.bin");
+
+            JOptionPane.showMessageDialog(this, "Registro de Usuario terminado con exito");
 
         } else if (rb_Admin.isSelected()) {
             usuarios.add(new Admin(Tf_usernameRegistrar.getText(), Tf_PasswordRegistrar.getText(), 0));
+            jd_Registrar.setVisible(false);
+            this.pack();
+            this.setVisible(true);
+            this.setResizable(false);
+            escribirUsuarios(usuarios, "usuarios.bin");
+
+            JOptionPane.showMessageDialog(this, "Registro de Usuario terminado con exito");
+        } else {
+            JOptionPane.showMessageDialog(jd_Registrar, "Se tiene que elegir un tipo de usuario");
         }
 
-        escribirUsuarios(usuarios, "usuarios.bin");
 
-        JOptionPane.showMessageDialog(this, "Registro de Usuario terminado con exito");
     }//GEN-LAST:event_jButton1MouseClicked
+
+    private void LoginConfirmMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_LoginConfirmMouseClicked
+        // TODO add your handling code here:
+
+        leerUsuarios("usuarios.bin");
+        
+        String nombreUsuario = Tf_username.getText();
+        String contrasenia = Tf_Password.getText();
+        
+        leerUsuarios(nombreUsuario);
+        
+        User temp1 = new User();
+        
+
+        for (User usuario : usuarios) {
+            if (nombreUsuario.equals(usuario.getNombre()) && contrasenia.equals(usuario.getPassword())) {
+                logged = true;
+                if (usuario instanceof Participante) {
+                    
+                     temp1 = (Participante)usuario;
+                    
+                } else if (usuario instanceof Admin) {
+                    
+                     temp1 = (Admin)usuario;
+                    
+                }
+                break;
+            }
+        }
+
+        if (logged) {
+            
+                if (temp1 instanceof Participante) {
+                    this.setVisible(false);
+
+                    LoginParticipante.setVisible(true);
+                    LoginParticipante.pack();
+                    LoginParticipante.setResizable(false);
+
+                } else if (temp1 instanceof Admin) {
+                    this.setVisible(false);
+
+                    LoginAdmin.setVisible(true);
+                    LoginAdmin.pack();
+                    LoginAdmin.setResizable(false);
+
+                }
+            
+            JOptionPane.showMessageDialog(this, "Sesion iniciada exitosamente.");
+
+        } else {
+            JOptionPane.showMessageDialog(this, "Nombre de usuario o contraseña incorrectos");
+        }
+
+
+    }//GEN-LAST:event_LoginConfirmMouseClicked
 
     /**
      * @param args the command line arguments
