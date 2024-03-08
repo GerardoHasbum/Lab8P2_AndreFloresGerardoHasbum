@@ -4,12 +4,16 @@
  */
 package lab8p2_andrefloresgerardohasbum;
 
+import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.Scanner;
 import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
 
@@ -25,7 +29,9 @@ public class Main extends javax.swing.JFrame {
      * Creates new form Main
      */
     public ArrayList<User> usuarios = new ArrayList();
+    public ArrayList<Torneo> torneos = new ArrayList();
     private boolean logged = false;
+    public User usuarioEnUso = new User();
 
     public Main() {
         initComponents();
@@ -57,11 +63,12 @@ public class Main extends javax.swing.JFrame {
         Tf_PasswordRegistrar = new javax.swing.JTextField();
         rb_Admin = new javax.swing.JRadioButton();
         rb_Participante = new javax.swing.JRadioButton();
-        jButton1 = new javax.swing.JButton();
+        jbCrear = new javax.swing.JButton();
         buttonGroup1 = new javax.swing.ButtonGroup();
         LoginAdmin = new javax.swing.JDialog();
         jPanel5 = new javax.swing.JPanel();
         jPanel6 = new javax.swing.JPanel();
+        jbSalirAdmin = new javax.swing.JButton();
         jLabel6 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jList1 = new javax.swing.JList<>();
@@ -69,10 +76,11 @@ public class Main extends javax.swing.JFrame {
         jList2 = new javax.swing.JList<>();
         jLabel7 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
+        jButton5 = new javax.swing.JButton();
         LoginParticipante = new javax.swing.JDialog();
         jPanel7 = new javax.swing.JPanel();
         jPanel8 = new javax.swing.JPanel();
-        jButton2 = new javax.swing.JButton();
+        jbSalirParticipante = new javax.swing.JButton();
         jLabel9 = new javax.swing.JLabel();
         jScrollPane3 = new javax.swing.JScrollPane();
         jList3 = new javax.swing.JList<>();
@@ -187,16 +195,16 @@ public class Main extends javax.swing.JFrame {
         rb_Participante.setText("Participante");
         jPanel3.add(rb_Participante, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 410, -1, -1));
 
-        jButton1.setBackground(new java.awt.Color(255, 0, 0));
-        jButton1.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        jButton1.setForeground(new java.awt.Color(255, 255, 255));
-        jButton1.setText("Crear");
-        jButton1.addMouseListener(new java.awt.event.MouseAdapter() {
+        jbCrear.setBackground(new java.awt.Color(255, 0, 0));
+        jbCrear.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        jbCrear.setForeground(new java.awt.Color(255, 255, 255));
+        jbCrear.setText("Crear");
+        jbCrear.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jButton1MouseClicked(evt);
+                jbCrearMouseClicked(evt);
             }
         });
-        jPanel3.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(480, 483, 90, 60));
+        jPanel3.add(jbCrear, new org.netbeans.lib.awtextra.AbsoluteConstraints(480, 483, 90, 60));
 
         javax.swing.GroupLayout jd_RegistrarLayout = new javax.swing.GroupLayout(jd_Registrar.getContentPane());
         jd_Registrar.getContentPane().setLayout(jd_RegistrarLayout);
@@ -221,15 +229,31 @@ public class Main extends javax.swing.JFrame {
 
         jPanel6.setBackground(new java.awt.Color(255, 0, 51));
 
+        jbSalirAdmin.setBackground(new java.awt.Color(0, 51, 204));
+        jbSalirAdmin.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jbSalirAdmin.setForeground(new java.awt.Color(255, 255, 255));
+        jbSalirAdmin.setText("Salir");
+        jbSalirAdmin.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jbSalirAdminMouseClicked(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
         jPanel6Layout.setHorizontalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 170, Short.MAX_VALUE)
+            .addGroup(jPanel6Layout.createSequentialGroup()
+                .addGap(45, 45, 45)
+                .addComponent(jbSalirAdmin)
+                .addContainerGap(49, Short.MAX_VALUE))
         );
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 570, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
+                .addContainerGap(442, Short.MAX_VALUE)
+                .addComponent(jbSalirAdmin, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(58, 58, 58))
         );
 
         jPanel5.add(jPanel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 170, 570));
@@ -238,7 +262,7 @@ public class Main extends javax.swing.JFrame {
         jList1.setModel(new DefaultListModel());
         jScrollPane1.setViewportView(jList1);
 
-        jPanel5.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 160, 180, 330));
+        jPanel5.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 150, 180, 330));
 
         jList2.setModel(new DefaultListModel());
         jScrollPane2.setViewportView(jList2);
@@ -255,15 +279,30 @@ public class Main extends javax.swing.JFrame {
         jLabel8.setText("Personas dentro del torneo");
         jPanel5.add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 120, -1, -1));
 
+        jButton5.setBackground(new java.awt.Color(0, 51, 204));
+        jButton5.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jButton5.setForeground(new java.awt.Color(255, 255, 255));
+        jButton5.setText("Salir");
+
         javax.swing.GroupLayout LoginAdminLayout = new javax.swing.GroupLayout(LoginAdmin.getContentPane());
         LoginAdmin.getContentPane().setLayout(LoginAdminLayout);
         LoginAdminLayout.setHorizontalGroup(
             LoginAdminLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(LoginAdminLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(LoginAdminLayout.createSequentialGroup()
+                    .addGap(277, 277, 277)
+                    .addComponent(jButton5)
+                    .addContainerGap(278, Short.MAX_VALUE)))
         );
         LoginAdminLayout.setVerticalGroup(
             LoginAdminLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(LoginAdminLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(LoginAdminLayout.createSequentialGroup()
+                    .addGap(250, 250, 250)
+                    .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap(250, Short.MAX_VALUE)))
         );
 
         jPanel7.setBackground(new java.awt.Color(255, 255, 255));
@@ -272,10 +311,20 @@ public class Main extends javax.swing.JFrame {
 
         jPanel8.setBackground(new java.awt.Color(255, 0, 51));
 
-        jButton2.setBackground(new java.awt.Color(0, 51, 204));
-        jButton2.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        jButton2.setForeground(new java.awt.Color(255, 255, 255));
-        jButton2.setText("Salir");
+        jbSalirParticipante.setBackground(new java.awt.Color(0, 51, 204));
+        jbSalirParticipante.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jbSalirParticipante.setForeground(new java.awt.Color(255, 255, 255));
+        jbSalirParticipante.setText("Salir");
+        jbSalirParticipante.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jbSalirParticipanteMouseClicked(evt);
+            }
+        });
+        jbSalirParticipante.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jbSalirParticipanteActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
         jPanel8.setLayout(jPanel8Layout);
@@ -283,14 +332,14 @@ public class Main extends javax.swing.JFrame {
             jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel8Layout.createSequentialGroup()
                 .addGap(45, 45, 45)
-                .addComponent(jButton2)
+                .addComponent(jbSalirParticipante)
                 .addContainerGap(53, Short.MAX_VALUE))
         );
         jPanel8Layout.setVerticalGroup(
             jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel8Layout.createSequentialGroup()
                 .addContainerGap(472, Short.MAX_VALUE)
-                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jbSalirParticipante, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(28, 28, 28))
         );
 
@@ -425,90 +474,81 @@ public class Main extends javax.swing.JFrame {
         jd_Registrar.setResizable(false);
     }//GEN-LAST:event_SignUpButtonMouseClicked
 
-    private void jButton1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton1MouseClicked
+    private void jbCrearMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jbCrearMouseClicked
         // TODO add your handling code here:
 
-        if (rb_Participante.isSelected()) {
-            usuarios.add(new Participante(Tf_usernameRegistrar.getText(), Tf_PasswordRegistrar.getText()));
-            jd_Registrar.setVisible(false);
-            this.pack();
-            this.setVisible(true);
-            this.setResizable(false);
-            escribirUsuarios(usuarios, "usuarios.bin");
+        this.setVisible(false);
+        jd_Registrar.setVisible(false);
 
-            JOptionPane.showMessageDialog(this, "Registro de Usuario terminado con exito");
-
-        } else if (rb_Admin.isSelected()) {
+        if (rb_Admin.isSelected()) {
             usuarios.add(new Admin(Tf_usernameRegistrar.getText(), Tf_PasswordRegistrar.getText(), 0));
-            jd_Registrar.setVisible(false);
-            this.pack();
-            this.setVisible(true);
-            this.setResizable(false);
-            escribirUsuarios(usuarios, "usuarios.bin");
 
-            JOptionPane.showMessageDialog(this, "Registro de Usuario terminado con exito");
-        } else {
-            JOptionPane.showMessageDialog(jd_Registrar, "Se tiene que elegir un tipo de usuario");
+        } else if (rb_Participante.isSelected()) {
+            usuarios.add(new Participante(Tf_usernameRegistrar.getText(), Tf_PasswordRegistrar.getText()));
         }
+        this.setVisible(true);
+        escribirUsuarios(usuarios, "usuarios.bin");
+
+        JOptionPane.showMessageDialog(this, "Registro de Usuario terminado con exito");
 
 
-    }//GEN-LAST:event_jButton1MouseClicked
+    }//GEN-LAST:event_jbCrearMouseClicked
 
     private void LoginConfirmMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_LoginConfirmMouseClicked
         // TODO add your handling code here:
+        usuarios = leerUsuarios("usuarios.bin");
 
-        leerUsuarios("usuarios.bin");
-        
         String nombreUsuario = Tf_username.getText();
         String contrasenia = Tf_Password.getText();
-        
-        leerUsuarios(nombreUsuario);
-        
-        User temp1 = new User();
-        
 
         for (User usuario : usuarios) {
             if (nombreUsuario.equals(usuario.getNombre()) && contrasenia.equals(usuario.getPassword())) {
+                usuarioEnUso = usuario;
                 logged = true;
-                if (usuario instanceof Participante) {
-                    
-                     temp1 = (Participante)usuario;
-                    
-                } else if (usuario instanceof Admin) {
-                    
-                     temp1 = (Admin)usuario;
-                    
-                }
                 break;
             }
         }
 
         if (logged) {
-            
-                if (temp1 instanceof Participante) {
-                    this.setVisible(false);
+            if (usuarioEnUso instanceof Participante) {
+                this.setVisible(false);
 
-                    LoginParticipante.setVisible(true);
-                    LoginParticipante.pack();
-                    LoginParticipante.setResizable(false);
+                LoginParticipante.setVisible(true);
+                LoginParticipante.pack();
+                LoginParticipante.setResizable(false);
 
-                } else if (temp1 instanceof Admin) {
-                    this.setVisible(false);
+            } else if (usuarioEnUso instanceof Admin) {
+                this.setVisible(false);
 
-                    LoginAdmin.setVisible(true);
-                    LoginAdmin.pack();
-                    LoginAdmin.setResizable(false);
+                LoginAdmin.setVisible(true);
+                LoginAdmin.pack();
+                LoginAdmin.setResizable(false);
 
-                }
-            
-            JOptionPane.showMessageDialog(this, "Sesion iniciada exitosamente.");
+            }
 
-        } else {
-            JOptionPane.showMessageDialog(this, "Nombre de usuario o contraseña incorrectos");
         }
 
 
     }//GEN-LAST:event_LoginConfirmMouseClicked
+
+    private void jbSalirAdminMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jbSalirAdminMouseClicked
+        // TODO add your handling code here:
+        LoginAdmin.setVisible(false);
+        this.pack();
+        this.setVisible(true);
+    }//GEN-LAST:event_jbSalirAdminMouseClicked
+
+    private void jbSalirParticipanteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbSalirParticipanteActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jbSalirParticipanteActionPerformed
+
+    private void jbSalirParticipanteMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jbSalirParticipanteMouseClicked
+        // TODO add your handling code here:LoginAdmin.setVisible(false);
+        LoginParticipante.setVisible(false);
+        this.pack();
+        this.setVisible(true);
+        
+    }//GEN-LAST:event_jbSalirParticipanteMouseClicked
 
     /**
      * @param args the command line arguments
@@ -563,6 +603,31 @@ public class Main extends javax.swing.JFrame {
         }
         return usuarios;
     }
+    
+    public static void escribirTexto(ArrayList<Torneo> lista, String path) throws IOException{
+        
+        FileWriter fw = null;
+        BufferedWriter bw = null;
+        
+        try {
+            
+            fw = new FileWriter(path, false);
+            bw = new BufferedWriter(fw);
+            
+            for ( Torneo a : lista) {
+                    Torneo temp = (Torneo) a;
+                    bw.write("EL participante "+temp.getGanador().getNombre()+" ha ganado el torneo "+temp.getNombre());
+            }
+            bw.flush();
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        
+        bw.close();
+        fw.close();
+        
+    }
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -576,10 +641,9 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JTextField Tf_username;
     private javax.swing.JTextField Tf_usernameRegistrar;
     private javax.swing.ButtonGroup buttonGroup1;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
+    private javax.swing.JButton jButton5;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
@@ -616,6 +680,9 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JSpinner jSpinner1;
     private javax.swing.JTextField jTextField1;
+    private javax.swing.JButton jbCrear;
+    private javax.swing.JButton jbSalirAdmin;
+    private javax.swing.JButton jbSalirParticipante;
     private javax.swing.JDialog jd_Registrar;
     private javax.swing.JRadioButton rb_Admin;
     private javax.swing.JRadioButton rb_Participante;
