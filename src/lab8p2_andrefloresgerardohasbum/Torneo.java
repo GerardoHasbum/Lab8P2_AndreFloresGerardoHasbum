@@ -21,7 +21,7 @@ public class Torneo implements Serializable{
     public Torneo(){
     }
 
-    public Torneo(String nombre, boolean flagAbierto, boolean flagGanador, Participante ganador) {
+    public Torneo(String nombre, boolean flagAbierto, boolean flagGanador) {
         this.nombre = nombre;
         this.flagAbierto = flagAbierto;
         this.flagGanador = flagGanador;
