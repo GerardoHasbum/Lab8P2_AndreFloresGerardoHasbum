@@ -4,13 +4,14 @@
  */
 package lab8p2_andrefloresgerardohasbum;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
  *
  * @author ghasb
  */
-public class Participante extends User{
+public class Participante extends User implements Serializable{
     
     public ArrayList<Torneo> inscritos = new ArrayList();
     public ArrayList<Torneo> ganados = new ArrayList();

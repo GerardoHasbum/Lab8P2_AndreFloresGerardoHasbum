@@ -4,11 +4,13 @@
  */
 package lab8p2_andrefloresgerardohasbum;
 
+import java.io.Serializable;
+
 /**
  *
  * @author ghasb
  */
-public class User {
+public class User implements Serializable{
     
     private String nombre, password;
 

@@ -4,11 +4,13 @@
  */
 package lab8p2_andrefloresgerardohasbum;
 
+import java.io.Serializable;
+
 /**
  *
  * @author ghasb
  */
-public class Admin extends User{
+public class Admin extends User implements Serializable{
     
     private int torneosCreados = 0;
 
